@@ -111,11 +111,11 @@
 </head>
 <body>
   <div class="container">
-    <h1>Henkilörekisteri</h1>
+    <h1>Laiton enkilörekisteri</h1>
     <form id="henkiloForm">
       <input type="text" name="nimi" placeholder="Nimi" required>
       <input type="text" name="puhelin" placeholder="Puhelinnumero" required>
-      <select name="sukupuoli" required>
+      <select name="patevyys" required>
         <option value="">Onko pätevyys?</option>
         <option value="Joo">Joo</option>
         <option value="Ei">Ei</option>
@@ -151,9 +151,9 @@
       const form = e.target;
       const nimi = form.nimi.value;
       const puhelin = form.puhelin.value;
-      const sukupuoli = form.sukupuoli.value;
+      const patevyys = form.patevyys.value;
       const henkilot = getHenkilot();
-      henkilot.push({ nimi, puhelin, sukupuoli });
+      henkilot.push({ nimi, puhelin, "Pätevyys:" patevyys });
       saveHenkilot(henkilot);
       form.reset();
       renderHenkilot();
