@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <title>Henkilörekisteri GitHub Pagesissa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #f5f7fa;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 480px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.10), 0 1.5px 4px rgba(0,0,0,0.05);
+      padding: 2.5em 2em 2em 2em;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: #113366;
+      margin-bottom: 1.2em;
+      font-weight: 600;
+    }
+    h2 {
+      font-size: 1.15em;
+      color: #113366;
+      margin-top: 2em;
+      margin-bottom: 0.8em;
+      font-weight: 500;
+      border-bottom: 1px solid #e0e6ed;
+      padding-bottom: 0.2em;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      margin-bottom: 1.3em;
+    }
+    input, select {
+      padding: 0.7em;
+      border-radius: 7px;
+      border: 1px solid #d3d5da;
+      font-size: 1em;
+      transition: border-color 0.2s;
+      outline: none;
+      background: #f8fafc;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    input:focus, select:focus {
+      border-color: #3778c2;
+      background: #fff;
+    }
+    button[type="submit"], .tyhjenna-btn {
+      background: #2266cc;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 0.7em 1.2em;
+      font-size: 1.05em;
+      font-weight: 500;
+      cursor: pointer;
+      margin-right: 0;
+      margin-bottom: 0.2em;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 5px rgba(34,102,204,0.10);
+      letter-spacing: 0.02em;
+    }
+    button[type="submit"]:hover, .tyhjenna-btn:hover {
+      background: #1552a1;
+    }
+    .tyhjenna-btn {
+      display: block;
+      width: 100%;
+      margin: 0.5em 0 1.2em 0;
+      background: #cc2222;
+      box-shadow: 0 1px 5px rgba(204,34,34,0.10);
+    }
+    .tyhjenna-btn:hover {
+      background: #991a1a;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    li {
+      background: #f2f6fa;
+      margin-bottom: 0.7em;
+      padding: 0.9em 1em;
+      border-radius: 7px;
+      font-size: 1em;
+      box-shadow: 0 1.5px 6px rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      word-break: break-word;
+    }
+    @media (max-width: 520px) {
+      .container {
+        padding: 1.2em 0.7em;
+        max-width: 99vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Henkilörekisteri</h1>
+    <form id="henkiloForm">
+      <input type="text" name="nimi" placeholder="Nimi" required>
+      <input type="text" name="puhelin" placeholder="Puhelinnumero" required>
+      <select name="sukupuoli" required>
+        <option value="">Onko pätevyys?</option>
+        <option value="Joo">Joo</option>
+        <option value="Ei">Ei</option>
+      </select>
+      <button type="submit">Tallenna</button>
+    </form>
+    <button id="tyhjennaKaikki" class="tyhjenna-btn" type="button">Tyhjennä kaikki henkilöt</button>
+    <h2>Tallennetut henkilöt</h2>
+    <ul id="henkilotList"></ul>
+  </div>
+  <script>
+    function getHenkilot() {
+      return JSON.parse(localStorage.getItem('henkilot') || '[]');
+    }
+
+    function saveHenkilot(henkilot) {
+      localStorage.setItem('henkilot', JSON.stringify(henkilot));
+    }
+
+    function renderHenkilot() {
+      const henkilot = getHenkilot();
+      const list = document.getElementById('henkilotList');
+      list.innerHTML = '';
+      henkilot.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.nimi}, ${item.puhelin}, ${item.sukupuoli}`;
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById('henkiloForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const nimi = form.nimi.value;
+      const puhelin = form.puhelin.value;
+      const sukupuoli = form.sukupuoli.value;
+      const henkilot = getHenkilot();
+      henkilot.push({ nimi, puhelin, sukupuoli });
+      saveHenkilot(henkilot);
+      form.reset();
+      renderHenkilot();
+    });
+
+    document.getElementById('tyhjennaKaikki').addEventListener('click', function() {
+      if (window.confirm('Haluatko varmasti tyhjentää kaikki henkilöt?')) {
+        localStorage.removeItem('henkilot');
+        renderHenkilot();
+      }
+    });
+
+    renderHenkilot();
+  </script>
+</body>
+</html>
